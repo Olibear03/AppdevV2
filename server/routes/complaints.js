@@ -1,43 +1,21 @@
 const express = require('express');
-const multer = require('multer');
 const Complaint = require('../models/Complaint');
-
+const auth = require('../middleware/auth');
 const router = express.Router();
 
-// Store uploads in server/uploads
-const upload = multer({ dest: 'server/uploads/' });
-
-router.post('/', upload.single('photo'), async (req, res) => {
+router.post('/', auth, async (req, res) => {
   try {
-    const { studentId, description, category, urgency, college, location } = req.body;
-
-    const complaint = new Complaint({
-      studentId,
-      description,
-      category,
-      urgency,
-      college,
-      location: location ? JSON.parse(location) : null,
-      photo: req.file ? req.file.path : null,
-      status: 'Pending',
-    });
-
+    const complaint = new Complaint({ ...req.body, createdBy: req.user.id });
     await complaint.save();
-    res.status(201).json({ message: 'Complaint submitted successfully', complaint });
+    res.status(201).json({ message: "Complaint submitted", complaint });
   } catch (err) {
-    console.error('Create complaint error:', err);
-    res.status(500).json({ error: 'Failed to submit complaint' });
+    res.status(400).json({ error: "Failed to submit complaint" });
   }
 });
 
-router.get('/', async (req, res) => {
-  try {
-    const complaints = await Complaint.find().sort({ createdAt: -1 });
-    res.json(complaints);
-  } catch (err) {
-    console.error('List complaints error:', err);
-    res.status(500).json({ error: 'Failed to fetch complaints' });
-  }
+router.get('/', auth, async (req, res) => {
+  const complaints = await Complaint.find().populate('createdBy', 'fullName email role');
+  res.json(complaints);
 });
 
 module.exports = router;

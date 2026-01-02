@@ -1,17 +1,10 @@
 const mongoose = require('mongoose');
-
 const ComplaintSchema = new mongoose.Schema({
-  studentId: String,
+  title: String,
   description: String,
-  category: String,
-  urgency: String,
-  college: String,
-  location: {
-    latitude: Number,
-    longitude: Number,
-  },
-  photo: String,
-  status: { type: String, default: 'Pending' },
+  location: String,
+  imageUrl: String,
+  status: { type: String, default: 'pending' },
+  createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
 }, { timestamps: true });
-
 module.exports = mongoose.model('Complaint', ComplaintSchema);
