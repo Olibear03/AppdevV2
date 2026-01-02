@@ -17,8 +17,8 @@ mongoose.connect(process.env.MONGO_URI)
 app.use('/auth', authRoutes);
 app.use('/complaints', complaintRoutes);
 
-app.listen(process.env.PORT, () => {
-  console.log(`🚀 Server running at http://localhost:${process.env.PORT}`);
-});
+const PORT = process.env.PORT || 4000;
 
-const complaintsRoutes = require('./routes/complaints'); app.use('/complaints', complaintsRoutes);
+app.listen(PORT, () => {
+  console.log(`🚀 Server running at http://localhost:${PORT}`);
+});

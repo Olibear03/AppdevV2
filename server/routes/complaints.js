@@ -8,11 +8,11 @@ const authMiddleware = require('../middleware/auth');
  */
 router.post('/', authMiddleware, async (req, res) => {
   try {
-    if (req.user.role !== 'student') {
-      return res.status(403).json({ error: 'Only students can submit complaints' });
+    if (!req.user || req.user.role !== 'student') {
+      return res.status(403).json({ error: 'Only authenticated students can submit complaints' });
     }
 
-    const { title, description, college, location, imageUrl } = req.body;
+    const { title, description, college, location, imageUrl, category, urgency, studentId } = req.body;
 
     const complaint = new Complaint({
       title,
@@ -20,6 +20,9 @@ router.post('/', authMiddleware, async (req, res) => {
       college,
       location,
       imageUrl,
+      category,   // ✅ save
+      urgency,    // ✅ save
+      studentId,  // ✅ save
       status: 'pending',
       createdBy: req.user.id
     });
@@ -27,10 +30,11 @@ router.post('/', authMiddleware, async (req, res) => {
     await complaint.save();
     res.status(201).json({ message: 'Complaint submitted successfully', complaint });
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Failed to submit complaint' });
+    console.error('POST /complaints error:', err.stack || err);
+    res.status(500).json({ error: 'Failed to submit complaint', details: err.message });
   }
 });
+
 
 /**
  * Get all complaints (superadmin only)
