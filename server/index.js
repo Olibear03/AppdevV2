@@ -20,3 +20,5 @@ app.use('/complaints', complaintRoutes);
 app.listen(process.env.PORT, () => {
   console.log(`🚀 Server running at http://localhost:${process.env.PORT}`);
 });
+
+const complaintsRoutes = require('./routes/complaints'); app.use('/complaints', complaintsRoutes);

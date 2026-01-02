@@ -1,21 +1,89 @@
 const express = require('express');
-const Complaint = require('../models/Complaint');
-const auth = require('../middleware/auth');
 const router = express.Router();
+const Complaint = require('../models/Complaint');
+const authMiddleware = require('../middleware/auth');
 
-router.post('/', auth, async (req, res) => {
+/**
+ * Create a new complaint (students only)
+ */
+router.post('/', authMiddleware, async (req, res) => {
   try {
-    const complaint = new Complaint({ ...req.body, createdBy: req.user.id });
+    if (req.user.role !== 'student') {
+      return res.status(403).json({ error: 'Only students can submit complaints' });
+    }
+
+    const { title, description, college, location, imageUrl } = req.body;
+
+    const complaint = new Complaint({
+      title,
+      description,
+      college,
+      location,
+      imageUrl,
+      status: 'pending',
+      createdBy: req.user.id
+    });
+
     await complaint.save();
-    res.status(201).json({ message: "Complaint submitted", complaint });
+    res.status(201).json({ message: 'Complaint submitted successfully', complaint });
   } catch (err) {
-    res.status(400).json({ error: "Failed to submit complaint" });
+    console.error(err);
+    res.status(500).json({ error: 'Failed to submit complaint' });
   }
 });
 
-router.get('/', auth, async (req, res) => {
-  const complaints = await Complaint.find().populate('createdBy', 'fullName email role');
-  res.json(complaints);
+/**
+ * Get all complaints (superadmin only)
+ */
+router.get('/', authMiddleware, async (req, res) => {
+  try {
+    if (req.user.role !== 'superadmin') {
+      return res.status(403).json({ error: 'Forbidden' });
+    }
+    const complaints = await Complaint.find().populate('createdBy');
+    res.json(complaints);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to fetch complaints' });
+  }
+});
+
+/**
+ * Get complaints by college (admin or superadmin)
+ */
+router.get('/college/:college', authMiddleware, async (req, res) => {
+  try {
+    if (req.user.role !== 'admin' && req.user.role !== 'superadmin') {
+      return res.status(403).json({ error: 'Forbidden' });
+    }
+    const complaints = await Complaint.find({ college: req.params.college }).populate('createdBy');
+    res.json(complaints);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to fetch complaints' });
+  }
+});
+
+/**
+ * Update complaint status (admin or superadmin only)
+ */
+router.put('/:id/status', authMiddleware, async (req, res) => {
+  try {
+    if (req.user.role !== 'admin' && req.user.role !== 'superadmin') {
+      return res.status(403).json({ error: 'Forbidden' });
+    }
+
+    const complaint = await Complaint.findById(req.params.id);
+    if (!complaint) return res.status(404).json({ error: 'Complaint not found' });
+
+    complaint.status = req.body.status;
+    await complaint.save();
+
+    res.json({ message: 'Complaint status updated', complaint });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to update complaint status' });
+  }
 });
 
 module.exports = router;
