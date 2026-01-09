@@ -1,0 +1,22 @@
+--- All Users ---
+Email: Oliver@cvsu.edu.ph | Role: student | Name: undefined
+Email: atlas@cvsu.edu.ph | Role: student | Name: Atlas Test
+Email: ace@cvsu.edu.ph | Role: student | Name: ace
+Email: CEIT@cvsu.com | Role: admin | Name: John Oliver banihit
+Email: student1767355786745@example.com | Role: student | Name: Test Student 1767355786745
+Email: main.gilbert.venida@cvsu.edu.ph | Role: student | Name: Berto Pogi
+Email: superadmin@cvsu.edu.ph | Role: superadmin | Name: System SuperAdmin  | Password: admin123
+Email: cafenr_admin@cvsu.edu.ph | Role: admin | Name: CAFENR Admin
+Email: cas_admin@cvsu.edu.ph | Role: admin | Name: CAS Admin
+Email: ccj_admin@cvsu.edu.ph | Role: admin | Name: CCJ Admin
+Email: cemds_admin@cvsu.edu.ph | Role: admin | Name: CEMDS Admin
+Email: ced_admin@cvsu.edu.ph | Role: admin | Name: CED Admin
+Email: ceit_admin@cvsu.edu.ph | Role: admin | Name: CEIT Admin
+Email: com_admin@cvsu.edu.ph | Role: admin | Name: COM Admin
+Email: con_admin@cvsu.edu.ph | Role: admin | Name: CON Admin
+Email: cspear_admin@cvsu.edu.ph | Role: admin | Name: CSPEAR Admin
+Email: cthm_admin@cvsu.edu.ph | Role: admin | Name: CTHM Admin
+Email: cvmbs_admin@cvsu.edu.ph | Role: admin | Name: CVMBS Admin
+Email: gsolc_admin@cvsu.edu.ph | Role: admin | Name: GS-OLC Admin
+
+Found 1 superadmin(s).
